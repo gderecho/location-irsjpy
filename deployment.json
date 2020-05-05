@@ -1,0 +1,53 @@
+{
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": {
+        "name": "irsjpy-location",
+        "namespace": "<NAMESPACE>"
+    },
+    "spec": {
+        "replicas": 1,
+        "selector": {
+            "matchLabels": {
+                "app": "irsjpy-location"
+            }
+        },
+        "template": {
+            "metadata": {
+                "labels": {
+                    "app": "irsjpy-location"
+                }
+            },
+            "spec": {
+                "containers": [{
+                    "name": "irsjpy-location",
+                    "image": "<IMAGE>",
+                    "imagePullPolicy": "Always",
+                    "ports": [
+                        {
+                            "containerPort": 80
+                        }
+                    ],
+                    "env": [
+                        {
+                            "name": "GOOGLE_MAPS_API_KEY",
+                            "valueFrom": {
+                                "secretKeyRef": {
+                                    "name": "google-maps-api-key",
+                                    "key": "string"
+                                }
+                            }
+                        },
+                        {
+                            "name": "IRSJPY_LOCATION_PORT",
+                            "value": "80"
+                        }
+                    ]
+                }],
+                "imagePullSecrets": [{
+                    "name": "github"
+                }]
+            }
+        }
+    }
+}
