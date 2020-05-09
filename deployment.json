@@ -1,53 +1,83 @@
 {
-    "apiVersion": "apps/v1",
-    "kind": "Deployment",
-    "metadata": {
-        "name": "irsjpy-location",
-        "namespace": "<NAMESPACE>"
-    },
-    "spec": {
-        "replicas": 3,
-        "selector": {
-            "matchLabels": {
-                "app": "irsjpy-location"
-            }
-        },
-        "template": {
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
             "metadata": {
-                "labels": {
-                    "app": "irsjpy-location"
-                }
+                "name": "irsjpy-location",
+                "namespace": "<NAMESPACE>"
             },
             "spec": {
-                "containers": [{
-                    "name": "irsjpy-location",
-                    "image": "<IMAGE>",
-                    "imagePullPolicy": "Always",
-                    "ports": [
-                        {
-                            "containerPort": 80
+                "replicas": 3,
+                "selector": {
+                    "matchLabels": {
+                        "app": "irsjpy-location"
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "app": "irsjpy-location"
                         }
-                    ],
-                    "env": [
-                        {
-                            "name": "GOOGLE_MAPS_API_KEY",
-                            "valueFrom": {
-                                "secretKeyRef": {
-                                    "name": "google-maps-api-key",
-                                    "key": "string"
+                    },
+                    "spec": {
+                        "containers": [{
+                            "name": "irsjpy-location",
+                            "image": "<IMAGE>",
+                            "imagePullPolicy": "Always",
+                            "ports": [
+                                {
+                                    "containerPort": 80
                                 }
-                            }
-                        },
-                        {
-                            "name": "IRSJPY_LOCATION_PORT",
-                            "value": "80"
-                        }
-                    ]
-                }],
-                "imagePullSecrets": [{
-                    "name": "github"
-                }]
+                            ],
+                            "env": [
+                                {
+                                    "name": "GOOGLE_MAPS_API_KEY",
+                                    "valueFrom": {
+                                        "secretKeyRef": {
+                                            "name": "google-maps-api-key",
+                                            "key": "string"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "IRSJPY_LOCATION_PORT",
+                                    "value": "80"
+                                }
+                            ]
+                        }],
+                        "imagePullSecrets": [{
+                            "name": "github"
+                        }]
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "name": "irsjpy-location",
+                "namespace": "<NAMESPACE>"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 80,
+                        "protocol": "TCP",
+                        "targetPort": 80
+                    }
+                ],
+                "selector": {
+                    "app": "irsjpy-location"
+                }
             }
         }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": "",
+        "selfLink": ""
     }
 }
